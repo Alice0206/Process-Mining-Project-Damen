@@ -1,4 +1,5 @@
 # The graph generation use the dot language in graphviz
+# We use the data for activity one
 from neo4j import GraphDatabase
 from graphviz import Digraph
 import graphviz
@@ -44,28 +45,18 @@ c16 = "#9932CC"
 c17 = "#4B0082"
 # BlueViolet 
 c18 = "#8A2BE2"
-
-
-
 # RosyBrown
 c19 = "#BC8F8F"
-
 # IndianRed
 c20 = "#CD5C5C"
-
 # Red
 c21 = "#FF0000"
-
 # Brown
 c22 = "#A52A2A"
-
-
 # FireBrick
 c23 = "#B22222"
-
 # DarkRed
 c24 = "#8B0000"
-
 
 
 
@@ -78,7 +69,6 @@ c3_light_blue = "#5b9bd5"
 c3_red = "#ff0000"
 c3_green = "#70ad47"
 c3_yellow = "#ffc000"
-
 
 c4_red = '#d7191c'
 c4_orange = '#fdae61'
@@ -97,92 +87,60 @@ c5_medium_blue = '#91bfdb'
 c5_dark_blue = '#4575b4'
 
 
-
-
-
-# Aqua	
-"#00FFFF"
-
-
 # Baby Blue	
 C1 = "#89CFF0"
 # Blue	
 C2 = "#0000FF"
 # Blue Gray	
 C3 = "#7393B3"
-
 # Blue Green	
 C4 = "#088F8F"
-
 # Bright Blue	
 C5 = "#0096FF"
-
 # Cadet Blue	
 C6 = "#5F9EA0"
-
 # Cobalt Blue	
 C7 = "#0047AB"
-
 # Cornflower Blue	
 C8 = "#6495ED"
-
 # Cyan	
 C9 = "#00FFFF"
-
 # Dark Blue	
 C10 = "#00008B"
-
 # Denim	
 C11 = "#6F8FAF"
-
 # Egyptian Blue	
 C12 = "#1434A4"
-
 # Electric Blue	
 C13 = "#7DF9FF"
-
 # Glaucous	
 C14 = "#6082B6"
-
 # Jade	
 C15 = "#00A36C"
-
 # Indigo	
 C16 = "#3F00FF"
-
-# # Iris	
+# Iris	
 C17 =  "#5D3FD3"
-
-# # Light Blue	
+# Light Blue	
 C18 = "#ADD8E6"
-
-# # Midnight Blue	
+# Midnight Blue	
 C19 = "#191970"
-
-# # Navy Blue	
+# Navy Blue	
 C20 = "#000080"
-
-# # Neon Blue	
+# Neon Blue	
 C21 = "#1F51FF"
-
 # Pastel Blue	
 C22 = "#A7C7E7"
-
 # Periwinkle	
 C23 = "#CCCCFF"
-
 # Powder Blue	
 C24 = "#B6D0E2"
-
 # Robin Egg Blue	
 C25 = "#96DED1"
-
 # Royal Blue	
 C26 = "#4169E1"
-
 # Sapphire Blue	
 C27 = "#0F52BA"
-
 # Seafoam Green	
 C28 = "#9FE2BF"
 
@@ -222,10 +180,11 @@ Pro_selector_e2 = "e2.Project in "+str(Projects)
 def getNodeLabel_Event(name):
     return name[7:14]
 
-def getEventsDF(tx, dot, entity_type,entity, color, fontcolor, edge_width):
+def getEventsDF(tx, dot, ID, color, fontcolor, edge_width):
     q = f'''
-        MATCH (e1) -[r:DF1{{EntityType:"{entity_type}"}}]-> (e2:Event)                        
-        RETURN e1,r,e2
+        MATCH (n:Entity {{ID:"{ID}"}}) <-[:CORR]- (e1:Event) -[r:DF1{{EntityType:'Project'}}]-> (e2:Event)
+        WHERE {Pro_selector} AND {Pro_selector_e2}
+        return e1,r,e2,n
         '''
     print(q)
    
@@ -272,7 +231,7 @@ def getEventsDF(tx, dot, entity_type,entity, color, fontcolor, edge_width):
                             a.attr(style='invis')
                         else:
                             a.attr(style='invis')
-                            a.node(e1_name,label = e1_name,style = "filled", fillcolor = c_white,fontcolor = fontcolor)
+                            a.node(e1_name,label = e1_name,style = "filled", fillcolor = c_white, fontcolor = fontcolor)
         
                     with c.subgraph(name= cluster_name_e2) as a:  
                         if int(record['e2']['Value']) == 0:
@@ -287,7 +246,29 @@ def getEventsDF(tx, dot, entity_type,entity, color, fontcolor, edge_width):
                     dot.edge(e1_name, e2_name, style = 'invis')
                     dot.attr(rankdir = 'LR')
                     
-                    
+def getActivityDF(tx, dot):
+    q = f'''
+        MATCH (n:Entity {{EntityType:"{'Activity'}"}}) <-[:CORR]- (e1:Event) -[r:DF1{{EntityType:'Activity'}}]-> (e2:Event)
+        WHERE {Pro_selector} AND {Pro_selector_e2}
+        return e1,r,e2,n
+        '''
+    for record in tx.run(q):
+        if record["e2"] != None:
+            e1_date = str(record["e1"]["Date"])
+            e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+            e2_date = str(record["e2"]["Date"])
+            e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
+            e1_person = str(record['e1']['Person'])
+            e2_person = str(record['e2']['Person'])
+            e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+            e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                                      
+            dot.node(e1_name, style = "invis")
+            dot.node(e2_name, style = "invis")
+            if e1_date == e2_date:
+                dot.edge(e1_name,e2_name,style = "invis",constraint = "false")    
+            else:
+                dot.edge(e1_name,e2_name,style = "invis") 
+                dot.attr(rankdir = 'LR')                    
 
 def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
     q = f'''
@@ -323,7 +304,7 @@ def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
                 dot.edge(e1_name,e2_name,xlabel=edge_label,color=edge_color,penwidth=pen_width,fontname="Helvetica", fontsize="10",fontcolor=edge_color) 
                 dot.attr(rankdir = 'LR')                    
 
-def getPersoninProjectDF(tx, dot, entity_type):
+def getPersonDF(tx, dot, entity_type):
     q = f'''
         match (n:Entity {{EntityType:"{'Person'}"}}) <-[:CORR]- (e1:Event) -[r:DF2{{EntityType:'{entity_type}'}}]-> (e2:Event)
         return e1,r,e2,n
@@ -340,42 +321,6 @@ def getPersoninProjectDF(tx, dot, entity_type):
             dot.edge(e1_name, e2_name, rank = "same",style = "invis")
             dot.attr(rankdir = "LR")                
                 
-# def getProjectsDF(tx, dot, edge_width):
-#     q = f'''
-#         match (n:Entity {{EntityType:"Project"}}) <-[:CORR]- (e1:Event) -[r:DF1{{EntityType:'Project'}}]-> (e2:Event)
-#         WHERE {Pro_selector} AND {Pro_selector_e2}
-#         return e1,r,e2,n
-#         '''
-#     for record in tx.run(q):
-#         if record["e2"] != None:
-#             e1_date = str(record["e1"]["Date"])
-#             e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-#             e2_date = str(record["e2"]["Date"])
-#             e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
-#             e1_person = str(record['e1']['Person'])
-#             e2_person = str(record['e2']['Person'])
-#             e1_project = str(record['e1']['Project'])
-#             e2_project = str(record['e2']['Project'])
-#             e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-#             e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                                      
-#             if e1_date == e2_date:
-#                 pen_width = str(edge_width)
-#                 edge_color = c2_cyan
-#                 edge_label = "P"+ record["n"]["ID"][7:9]
-#                 dot.edge(e1_name, e2_name,constraint='false',color=edge_color)
-
-#             else:
-#                 days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
-#                 if days == 0 or days == 1:
-#                     edge_label = "P"+ record["n"]["ID"][7:9]
-#                 else:
-#                     edge_label = "P"+ record["n"]["ID"][7:9] + '__' +str(int(days)-1) + ' days'
-#                 pen_width = str(edge_width)
-#                 edge_color = c2_cyan
-#                 cluster_name_e1 = 'cluster' + e1_date + e1_project
-#                 cluster_name_e2 = 'cluster' + e2_date + e2_project
-#                 dot.edge(e1_name, e2_name,constraint='false',xlabel=edge_label,color=edge_color,penwidth=pen_width,fontname="Helvetica", fontsize="8",fontcolor=edge_color)
-#                 dot.attr(rankdir= 'LR')
 
   
 def getEntityForFirstEvent(tx,dot,entity_type,color,fontcolor):
@@ -431,47 +376,48 @@ dot.attr("graph",margin="0")
 with driver.session() as session:
 
     session.read_transaction(getActivityDF, dot)
-    session.read_transaction(getEventsDF, dot,"AT_Pro1","Project" , c5_dark_blue, c_black, 3)
+    
+    session.read_transaction(getEventsDF, dot,"Project1", c5_dark_blue, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro1_Person")
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro4","Project" , c5_medium_blue, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project4", c5_medium_blue, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro4_Person")
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro2" ,"Project", C1, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project2", C1, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro2_Person")
 
 
-    session.read_transaction(getEventsDF, dot,"AT_Pro3" ,"Project", C3, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project3", C3, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro3_Person")
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro5" ,"Project", C4, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project5", C4, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro5_Person")
 
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro6" ,"Project", C6, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project6", C6, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro6_Person")
 
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro7" ,"Project", C8, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project7", C8, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro7_Person")
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro8" ,"Project", C11, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project8", C11, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro8_Person")
 
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro9" ,"Project", C14, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project9", C14, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro9_Person")
 
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro10" ,"Project", C15, c_black, 3)
+    session.read_transaction(getEventsDF, dot,"Project10", C15, c_black, 3)
     session.read_transaction(getPersonDF,dot,"Pro10_Person")
 
 
