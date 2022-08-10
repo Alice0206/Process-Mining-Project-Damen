@@ -244,23 +244,23 @@ def getEventsDF(tx, dot, entity_type,entity, color, fontcolor, edge_width):
                     dot.edge(e1_name, e2_name, style = 'invis')
                     dot.attr(rankdir = 'LR')
                     
-                    
-def getPersonDF(tx, dot, entity_type):
-    q = f'''
-        match (n:Entity {{EntityType:"{'Person'}"}}) <-[:CORR]- (e1:Event) -[r:DF2{{EntityType:'{entity_type}'}}]-> (e2:Event)
-        return e1,r,e2,n
-        '''
-    for record in tx.run(q):
-        if record["e2"] != None:
-            e1_date = str(record["e1"]["Date"])
-            e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-            e2_date = str(record["e2"]["Date"])
-            e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
-            e1_person = str(record['e1']['Person'])
-            e2_person = str(record['e2']['Person'])
+# Optional: this DF helps to list all the events of one employee within one project cluster with the same y-axis coordinate                 
+# def getPersonDF(tx, dot, entity_type):
+#     q = f'''
+#         match (n:Entity {{EntityType:"{'Person'}"}}) <-[:CORR]- (e1:Event) -[r:DF2{{EntityType:'{entity_type}'}}]-> (e2:Event)
+#         return e1,r,e2,n
+#         '''
+#     for record in tx.run(q):
+#         if record["e2"] != None:
+#             e1_date = str(record["e1"]["Date"])
+#             e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+#             e2_date = str(record["e2"]["Date"])
+#             e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
+#             e1_person = str(record['e1']['Person'])
+#             e2_person = str(record['e2']['Person'])
 
-            dot.edge(e1_name, e2_name, rank = "same",style = "invis")
-            dot.attr(rankdir = "LR")
+#             dot.edge(e1_name, e2_name, rank = "same",style = "invis")
+#             dot.attr(rankdir = "LR")
             
             
             
@@ -387,34 +387,34 @@ with driver.session() as session:
     session.read_transaction(getActivityDF, dot)
     
     session.read_transaction(getEventsDF, dot,"Project1", c5_dark_blue, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro1_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro1_Person")
  
     session.read_transaction(getEventsDF, dot,"Project4", c5_medium_blue, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro4_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro4_Person")
 
     session.read_transaction(getEventsDF, dot,"Project2", C1, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro2_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro2_Person")
 
     session.read_transaction(getEventsDF, dot,"Project3", C3, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro3_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro3_Person")
 
     session.read_transaction(getEventsDF, dot,"Project5", C4, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro5_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro5_Person")
 
     session.read_transaction(getEventsDF, dot,"Project6", C6, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro6_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro6_Person")
 
     session.read_transaction(getEventsDF, dot,"Project7", C8, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro7_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro7_Person")
     
     session.read_transaction(getEventsDF, dot,"Project8", C11, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro8_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro8_Person")
 
     session.read_transaction(getEventsDF, dot,"Project9", C14, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro9_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro9_Person")
 
     session.read_transaction(getEventsDF, dot,"Project10", C15, c_black, 3)
-    session.read_transaction(getPersonDF,dot,"Pro10_Person")
+#     session.read_transaction(getPersonDF,dot,"Pro10_Person")
 
     session.read_transaction(getResourcesDF, dot,c5_red, 3) 
     session.read_transaction(getProjectsDF, dot,3)
