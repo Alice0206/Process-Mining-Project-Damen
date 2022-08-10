@@ -153,7 +153,7 @@ for entity in data_entities:
 
 
 
-
+# Optional
 # Step 4: Create DF edges for events correlated to each person in each project to arrange these events on the same level
 query_create_directly_follows = f'''
     CALL apoc.periodic.iterate(
