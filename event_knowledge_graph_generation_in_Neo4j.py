@@ -1,6 +1,6 @@
 # The execution is done by Neo4j Software and Python.
 #----------------------------------------------Neo4j Setting----------------------------------------
-# 1. Download Neo4j Desktop(The version is 4.4.03)
+# 1. Download Neo4j Desktop(The version is 1.4.13)
 
 # 2. Open a new project and import csv file
 # connection to Neo4J database
@@ -14,7 +14,7 @@ driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
 #    see https://neo4j.com/docs/cypher-manual/current/clauses/load-csv/#query-load-csv-introduction
 path_to_neo4j_import_directory = 'C:\\temp\\import\\'
 
-# 3. Install APOC library in the plug-ins to allow periodic iterations.
+# 3. Install APOC library in the plug-ins to allow periodic iterations. (The version is 4.4.03)
 # ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
 % # ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
 
