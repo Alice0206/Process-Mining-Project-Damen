@@ -155,146 +155,146 @@ for entity in data_entities:
 
 # Optional
 # Step 4: Create DF edges for events correlated to each person in each project to arrange these events on the same level
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project1'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro1_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows) 
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project4'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro4_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project2'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro2_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project3'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro3_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project5'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro5_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project6'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro6_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project7'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro7_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project8'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro8_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project9'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro9_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
-query_create_directly_follows = f'''
-    CALL apoc.periodic.iterate(
-    "MATCH (n1:Entity) WHERE n1.ID='{'Project10'}'
-    MATCH (n1)<-[:CORR]-(e:Event)
-    MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
-    MATCH (n2)<-[:CORR]-(e:Event)
-    WITH n2, e AS nodes ORDER BY e.Date
-    WITH n2, collect(nodes) AS event_node_list
-    UNWIND range(0, size(event_node_list)-2) AS i
-    RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-    "WITH n2,e1,e2
-    MERGE (e1)-[df :DF2 {{EntityType:'Pro10_Person'}}]->(e2)",
-    {{batchSize:1000}})'''
-runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project1'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro1_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows) 
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project4'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro4_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project2'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro2_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project3'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro3_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project5'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro5_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project6'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro6_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project7'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro7_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project8'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro8_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project9'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro9_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
+# query_create_directly_follows = f'''
+#     CALL apoc.periodic.iterate(
+#     "MATCH (n1:Entity) WHERE n1.ID='{'Project10'}'
+#     MATCH (n1)<-[:CORR]-(e:Event)
+#     MATCH (n2:Entity) WHERE n2.EntityType='{'Person'}'
+#     MATCH (n2)<-[:CORR]-(e:Event)
+#     WITH n2, e AS nodes ORDER BY e.Date
+#     WITH n2, collect(nodes) AS event_node_list
+#     UNWIND range(0, size(event_node_list)-2) AS i
+#     RETURN n2, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+#     "WITH n2,e1,e2
+#     MERGE (e1)-[df :DF2 {{EntityType:'Pro10_Person'}}]->(e2)",
+#     {{batchSize:1000}})'''
+# runQuery(driver, query_create_directly_follows)
 
 
 
