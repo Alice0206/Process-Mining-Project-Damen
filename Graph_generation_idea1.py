@@ -177,7 +177,8 @@ AT_selector = 'True'
 Projects = ['Project1','Project2','Project3','Project4','Project5','Project6','Project7','Project8','Project9','Project10']
 Pro_selector = "e1.Project in "+str(Projects)
 Pro_selector_e2 = "e2.Project in "+str(Projects)
-
+def getNodeLabel_Event(name):
+    return name[7:14]
 
 def getEventsDF(tx, dot, entity_type,entity, color, fontcolor, edge_width):
     q = f'''
@@ -309,7 +310,7 @@ def getResourcesDF(tx, dot, color, edge_width):
                 pen_width= str(edge_width)
                 dot.edge(e1_name,e2_name,xlabel=edge_label,color = edge_color,penwidth=pen_width,fontname="Helvetica", fontsize="10",fontcolor=edge_color)
             else:
-                days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
+                days = np.busday_count(e1_date, e2_date, holidays = holidays)
                 if days == 0  or days == 1:
                     edge_label = "E"+ record["n"]["ID"][8:11]
                     
@@ -345,7 +346,7 @@ def getProjectsDF(tx, dot, edge_width):
                 dot.edge(e1_name, e2_name,constraint='false',xlabel=edge_label,color=edge_color,penwidth=pen_width,fontname="Helvetica", fontsize="8",fontcolor=edge_color)
 
             else:
-                days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
+                days = np.busday_count(e1_date, e2_date,, holidays = holidays)
                 if days == 0 or days == 1:
                     edge_label = "P"+ record["n"]["ID"][7:9]
                 else:
