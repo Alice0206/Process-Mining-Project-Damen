@@ -278,7 +278,7 @@ def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
             e2_person = str(record['e2']['Person'])
             e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
             e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                                      
-            days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
+            days = np.busday_count(e1_date, e2_date, holidays = holidays)
             if e1_date == e2_date:
                 dot.node(e1_name,style='filled',fillcolor=color,fontcolor = fontcolor)
                 dot.node(e2_name,style='filled',fillcolor=color,fontcolor = fontcolor)
