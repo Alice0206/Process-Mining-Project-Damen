@@ -9,6 +9,32 @@ import os
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
 
+# colors
+c2_cyan = "#318599"
+c2_orange = "#ea700d"
+c2_light_orange = "#f59d56"
+c2_light_yellow = "#ffd965"
+
+c3_light_blue = "#5b9bd5"
+c3_red = "#ff0000"
+c3_green = "#70ad47"
+c3_yellow = "#ffc000"
+
+c4_red = '#d7191c'
+c4_orange = '#fdae61'
+c4_yellow = '#ffffbf'
+c4_light_blue = '#abd9e9'
+c4_dark_blue = '#2c7bb6'
+
+c_white = "#ffffff"
+c_black = "#000000"
+
+c5_red = '#d73027'
+c5_orange = '#fc8d59'
+c5_yellow = '#fee090'
+c5_light_blue = '#e0f3f8'
+c5_medium_blue = '#91bfdb'
+c5_dark_blue = '#4575b4'
 # Crimson 
 c1 =  "#DC143C" 
 # HotPink  
@@ -57,35 +83,6 @@ c22 = "#A52A2A"
 c23 = "#B22222"
 # DarkRed
 c24 = "#8B0000"
-
-
-
-c2_cyan = "#318599"
-c2_orange = "#ea700d"
-c2_light_orange = "#f59d56"
-c2_light_yellow = "#ffd965"
-
-c3_light_blue = "#5b9bd5"
-c3_red = "#ff0000"
-c3_green = "#70ad47"
-c3_yellow = "#ffc000"
-
-c4_red = '#d7191c'
-c4_orange = '#fdae61'
-c4_yellow = '#ffffbf'
-c4_light_blue = '#abd9e9'
-c4_dark_blue = '#2c7bb6'
-
-c_white = "#ffffff"
-c_black = "#000000"
-
-c5_red = '#d73027'
-c5_orange = '#fc8d59'
-c5_yellow = '#fee090'
-c5_light_blue = '#e0f3f8'
-c5_medium_blue = '#91bfdb'
-c5_dark_blue = '#4575b4'
-
 
 # Baby Blue	
 C1 = "#89CFF0"
@@ -144,8 +141,6 @@ C27 = "#0F52BA"
 # Seafoam Green	
 C28 = "#9FE2BF"
 
-
-
 holidays = [
 "2016-03-25",
 "2016-05-16" ,
@@ -167,9 +162,6 @@ holidays = [
 "2020-06-01" ,
 "2021-04-02" ,
 "2021-04-05" ]
-
-# all activities
-AT_selector = 'True'
 
 
 Projects = ['Project1','Project2','Project3','Project4','Project5','Project6','Project7','Project8','Project9','Project10']
