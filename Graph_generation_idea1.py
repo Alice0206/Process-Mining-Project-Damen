@@ -170,9 +170,6 @@ holidays = [
 "2021-04-02" ,
 "2021-04-05" ]
 
-# all activities
-AT_selector = 'True'
-
 
 Projects = ['Project1','Project2','Project3','Project4','Project5','Project6','Project7','Project8','Project9','Project10']
 Pro_selector = "e1.Project in "+str(Projects)
