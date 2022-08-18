@@ -84,62 +84,152 @@ c23 = "#B22222"
 # DarkRed
 c24 = "#8B0000"
 
+# # Baby Blue	
+# C1 = "#89CFF0"
+# # Blue	
+# C2 = "#0000FF"
+# # Blue Gray	
+# C3 = "#7393B3"
+# # Blue Green	
+# C4 = "#088F8F"
+# # Bright Blue	
+# C5 = "#0096FF"
+# # Cadet Blue	
+# C6 = "#5F9EA0"
+# # Cobalt Blue	
+# C7 = "#0047AB"
+# # Cornflower Blue	
+# C8 = "#6495ED"
+# # Cyan	
+# C9 = "#00FFFF"
+# # Dark Blue	
+# C10 = "#00008B"
+# # Denim	
+# C11 = "#6F8FAF"
+# # Egyptian Blue	
+# C12 = "#1434A4"
+# # Electric Blue	
+# C13 = "#7DF9FF"
+# # Glaucous	
+# C14 = "#6082B6"
+# # Jade	
+# C15 = "#00A36C"
+# # Indigo	
+# C16 = "#3F00FF"
+# # Iris	
+# C17 =  "#5D3FD3"
+# # Light Blue	
+# C18 = "#ADD8E6"
+# # Midnight Blue	
+# C19 = "#191970"
+# # Navy Blue	
+# C20 = "#000080"
+# # Neon Blue	
+# C21 = "#1F51FF"
+# # Pastel Blue	
+# C22 = "#A7C7E7"
+# # Periwinkle	
+# C23 = "#CCCCFF"
+# # Powder Blue	
+# C24 = "#B6D0E2"
+# # Robin Egg Blue	
+# C25 = "#96DED1"
+# # Royal Blue	
+# C26 = "#4169E1"
+# # Sapphire Blue	
+# C27 = "#0F52BA"
+# # Seafoam Green	
+# C28 = "#9FE2BF"
+
+c5_medium_blue = '#8091bfdb'
+c5_dark_blue = '#804575b4'
 # Baby Blue	
-C1 = "#89CFF0"
+C1 = "#8089CFF0"
 # Blue	
-C2 = "#0000FF"
+C2 = "#800000FF"
 # Blue Gray	
-C3 = "#7393B3"
+C3 = "#807393B3"
+
 # Blue Green	
-C4 = "#088F8F"
+C4 = "#80088F8F"
+
 # Bright Blue	
-C5 = "#0096FF"
+C5 = "#800096FF"
+
 # Cadet Blue	
-C6 = "#5F9EA0"
+C6 = "#805F9EA0"
+
 # Cobalt Blue	
-C7 = "#0047AB"
+C7 = "#800047AB"
+
 # Cornflower Blue	
-C8 = "#6495ED"
+C8 = "#806495ED"
+
 # Cyan	
-C9 = "#00FFFF"
+C9 = "#8000FFFF"
+
 # Dark Blue	
-C10 = "#00008B"
+C10 = "#8000008B"
+
 # Denim	
-C11 = "#6F8FAF"
+C11 = "#806F8FAF"
+
 # Egyptian Blue	
-C12 = "#1434A4"
+C12 = "#801434A4"
+
 # Electric Blue	
-C13 = "#7DF9FF"
+C13 = "#807DF9FF"
+
 # Glaucous	
-C14 = "#6082B6"
+C14 = "#806082B6"
+
 # Jade	
-C15 = "#00A36C"
+C15 = "#8000A36C"
+
 # Indigo	
-C16 = "#3F00FF"
-# Iris	
-C17 =  "#5D3FD3"
-# Light Blue	
-C18 = "#ADD8E6"
-# Midnight Blue	
-C19 = "#191970"
-# Navy Blue	
-C20 = "#000080"
-# Neon Blue	
-C21 = "#1F51FF"
+C16 = "#803F00FF"
+
+# # Iris	
+C17 =  "#805D3FD3"
+
+# # Light Blue	
+C18 = "#80ADD8E6"
+
+# # Midnight Blue	
+C19 = "#80191970"
+
+# # Navy Blue	
+C20 = "#80000080"
+
+# # Neon Blue	
+C21 = "#801F51FF"
+
 # Pastel Blue	
-C22 = "#A7C7E7"
+C22 = "#80A7C7E7"
+
 # Periwinkle	
-C23 = "#CCCCFF"
+C23 = "#80CCCCFF"
+
 # Powder Blue	
-C24 = "#B6D0E2"
+C24 = "#80B6D0E2"
+
 # Robin Egg Blue	
-C25 = "#96DED1"
+C25 = "#8096DED1"
+
 # Royal Blue	
-C26 = "#4169E1"
+C26 = "#804169E1"
+
 # Sapphire Blue	
-C27 = "#0F52BA"
+C27 = "#800F52BA"
+
 # Seafoam Green	
-C28 = "#9FE2BF"
+C28 = "#809FE2BF"
+
+# Sky Blue	
+c29 = "#8087CEEB"
+
+
+
 
 holidays = [
 "2016-03-25",
@@ -194,7 +284,7 @@ def getEventsDF(tx, dot, ID, color, fontcolor, edge_width):
             e2_project = str(record['e2']['Project'])
 
             with dot.subgraph(name = 'cluster' + e1_project) as c:
-                c.attr(style = "filled", fillcolor = "lightgrey")
+                c.attr(style = "filled", fillcolor = color)
                 c.node(e1_project, label = e1_project,shape="rectangle",fixedsize="false", width="0.4", height="0.4", style = "filled", fillcolor = color, fontcolor = "white")
                 cluster_name_e1 = 'cluster' + e1_date + e1_project
                 cluster_name_e2 = 'cluster' + e2_date + e2_project
