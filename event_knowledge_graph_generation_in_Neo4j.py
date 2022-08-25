@@ -54,8 +54,7 @@ def LoadLog(localFile):
 
 # Step 1: create event nodes
 def CreateEventQuery(logHeader, fileName, LogID = ""):
-    query = f'USING PERIODIC COMMIT LOAD CSV WITH HEADERS
-    FROM \"file:/{fileName}\" as line'
+    query = f'USING PERIODIC COMMIT LOAD CSV WITH HEADERS FROM \"file:/{fileName}\" as line'
     for col in logHeader:
         if col in ['Date']:
              column = f'line.{col}'
@@ -138,7 +137,7 @@ for entity in data_entities:
     runQuery(driver, query_create_directly_follows)
         
 # create DF1 for each entity type
-  query_create_directly_follows = f'''
+    query_create_directly_follows = f'''
       CALL apoc.periodic.iterate(
       "MATCH (n:Entity) WHERE n.EntityType='{entity}'
       MATCH (n)<-[:CORR]-(e:Event)
@@ -149,7 +148,7 @@ for entity in data_entities:
       "WITH n,e1,e2
       MERGE (e1)-[df:DF1 {{EntityType:n.EntityType}}]->(e2)",
       {{batchSize:1000}})'''
-  runQuery(driver, query_create_directly_follows)
+     runQuery(driver, query_create_directly_follows)
 
 
 
