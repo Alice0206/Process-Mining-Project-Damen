@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
 
 
 from neo4j import GraphDatabase
@@ -7,11 +11,15 @@ from datetime import datetime
 import numpy as np
 
 
+# In[2]:
+
 
 ### begin config
 # connection to Neo4J database
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
 
+
+# In[3]:
 
 
 ##### colors
@@ -61,6 +69,10 @@ c5_light_blue = '#e0f3f8'
 c5_medium_blue = '#91bfdb'
 c5_dark_blue = '#4575b4'
 
+
+
+
+# In[4]:
 
 
 # Crimson 
@@ -262,6 +274,8 @@ c29 = "#87CEEB"
 # Zaffre	
 #0818A8
 
+
+# In[5]:
 
 
 #date_person_as_cluster
@@ -632,3 +646,28 @@ file = open("activities.dot","w")
 file.write(dot.source)
 file.close()
 dot.render('test-output/round-table.gv', view=True)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
