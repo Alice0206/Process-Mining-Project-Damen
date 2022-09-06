@@ -16,7 +16,7 @@ path_to_neo4j_import_directory = 'C:\\temp\\import\\'
 
 # 3. Install APOC library in the plug-ins to allow periodic iterations. (The version is 4.4.03)
 # ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
-% # ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
+# ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
 
 # ---------------------------------Using Python to connect with Neo4j and generate event knowledge graph----------------
 import pandas as pd
