@@ -1,28 +1,18 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
+from datetime import datetime
 
 from neo4j import GraphDatabase
 from graphviz import Digraph
 import graphviz
-from datetime import datetime
 import numpy as np
+import pandas as pd
+import holidays
 
-
-# In[2]:
-
-
-### begin config
+# begin config
 # connection to Neo4J database
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
 
+# colors
 
-# In[3]:
-
-
-##### colors
 #c81919 - dark red
 #f9cccc - light red
 #
@@ -52,7 +42,6 @@ c3_red = "#ff0000"
 c3_green = "#70ad47"
 c3_yellow = "#ffc000"
 
-
 c4_red = '#d7191c'
 c4_orange = '#fdae61'
 c4_yellow = '#ffffbf'
@@ -69,72 +58,31 @@ c5_light_blue = '#e0f3f8'
 c5_medium_blue = '#91bfdb'
 c5_dark_blue = '#4575b4'
 
-
-
-
-# In[4]:
-
-
-# Crimson 
-c1 =  "#DC143C" 
-# HotPink  
-c2 = "#FF69B4"
-# DeepPink 
-c3 = "#FF1493"
-# Pink 
-c4 = "#FFC0CB"
-# MediumVioletRed 
-c5 = "#C71585"
-# Orchid 
-c6 = "#DA70D6"
-# Thistle 
-c7 = "#D8BFD8"
-# plum 
-c8 = "#DDA0DD"
-# Violet 
-c9 = "#EE82EE"
-# Magenta 
-c10 = "#FF00FF"
-# Fuchsia 
-c11 = "#FF00FF"
-# DarkMagenta 
-c12 = "#8B008B"
-# Purple 
-c13 = "#800080"
-# MediumOrchid 
-c14 = "#BA55D3"
-# DarkVoilet 
-c15 = "#9400D3"
-# DarkOrchid 
-c16 = "#9932CC"
-# Indigo 
-c17 = "#4B0082"
-# BlueViolet 
-c18 = "#8A2BE2"
-
-
-
-# RosyBrown
-c19 = "#BC8F8F"
-
-# IndianRed
-c20 = "#CD5C5C"
-
-# Red
-c21 = "#FF0000"
-
-# Brown
-c22 = "#A52A2A"
-
-
-# FireBrick
-c23 = "#B22222"
-
-# DarkRed
-c24 = "#8B0000"
-
-
-
+ 
+c1 = "#DC143C" # Crimson
+c2 = "#FF69B4" # HotPink
+c3 = "#FF1493" # DeepPink
+c4 = "#FFC0CB" # Pink
+c5 = "#C71585" # MediumVioletRed
+c6 = "#DA70D6" # Orchid
+c7 = "#D8BFD8" # Thistle
+c8 = "#DDA0DD" # plum
+c9 = "#EE82EE" # Violet
+c10 = "#FF00FF" # Magenta
+c11 = "#FF00FF" # Fuchsia
+c12 = "#8B008B" # DarkMagenta
+c13 = "#800080" # Purple
+c14 = "#BA55D3" # MediumOrchid
+c15 = "#9400D3" # DarkVoilet
+c16 = "#9932CC" # DarkOrchid
+c17 = "#4B0082" # Indigo
+c18 = "#8A2BE2" # BlueViolet
+c19 = "#BC8F8F" # RosyBrown
+c20 = "#CD5C5C" # IndianRed
+c21 = "#FF0000" # Red
+c22 = "#A52A2A" # Brown
+c23 = "#B22222" # FireBrick
+c24 = "#8B0000" # DarkRed
 
 c2_cyan = "#318599"
 c2_orange = "#ea700d"
@@ -146,7 +94,6 @@ c3_red = "#ff0000"
 c3_green = "#70ad47"
 c3_yellow = "#ffc000"
 
-
 c4_red = '#d7191c'
 c4_orange = '#fdae61'
 c4_yellow = '#ffffbf'
@@ -163,180 +110,89 @@ c5_light_blue = '#e0f3f8'
 c5_medium_blue = '#91bfdb'
 c5_dark_blue = '#4575b4'
 
-
-
-
-
-# Aqua	
-"#00FFFF"
-
-
-# Baby Blue	
-C1 = "#89CFF0"
-# Blue	
-C2 = "#0000FF"
-# Blue Gray	
-C3 = "#7393B3"
-
-# Blue Green	
-C4 = "#088F8F"
-
-# Bright Blue	
-C5 = "#0096FF"
-
-# Cadet Blue	
-C6 = "#5F9EA0"
-
-# Cobalt Blue	
-C7 = "#0047AB"
-
-# Cornflower Blue	
-C8 = "#6495ED"
-
-# Cyan	
-C9 = "#00FFFF"
-
-# Dark Blue	
-C10 = "#00008B"
-
-# Denim	
-C11 = "#6F8FAF"
-
-# Egyptian Blue	
-C12 = "#1434A4"
-
-# Electric Blue	
-C13 = "#7DF9FF"
-
-# Glaucous	
-C14 = "#6082B6"
-
-# Jade	
-C15 = "#00A36C"
-
-# Indigo	
-C16 = "#3F00FF"
-
-# # Iris	
-C17 =  "#5D3FD3"
-
-# # Light Blue	
-C18 = "#ADD8E6"
-
-# # Midnight Blue	
-C19 = "#191970"
-
-# # Navy Blue	
-C20 = "#000080"
-
-# # Neon Blue	
-C21 = "#1F51FF"
-
-# Pastel Blue	
-C22 = "#A7C7E7"
-
-# Periwinkle	
-C23 = "#CCCCFF"
-
-# Powder Blue	
-C24 = "#B6D0E2"
-
-# Robin Egg Blue	
-C25 = "#96DED1"
-
-# Royal Blue	
-C26 = "#4169E1"
-
-# Sapphire Blue	
-C27 = "#0F52BA"
-
-# Seafoam Green	
-C28 = "#9FE2BF"
-
-# Sky Blue	
-c29 = "#87CEEB"
+C0 = "#00FFFF" # Aqua
+C1 = "#89CFF0" # Baby Blue
+C2 = "#0000FF" # Blue
+C3 = "#7393B3" # Blue Gray
+C4 = "#088F8F" # Blue Green
+C5 = "#0096FF" # Bright Blue
+C6 = "#5F9EA0" # Cadet Blue
+C7 = "#0047AB" # Cobalt Blue
+C8 = "#6495ED" # Cornflower Blue
+C9 = "#00FFFF" # Cyan
+C10 = "#00008B" # Dark Blue
+C11 = "#6F8FAF" # Denim
+C12 = "#1434A4" # Egyptian Blue
+C13 = "#7DF9FF" # Electric Blue
+C14 = "#6082B6" # Glaucous
+C15 = "#00A36C" # Jade
+C16 = "#3F00FF" # Indigo
+C17 =  "#5D3FD3" # Iris
+C18 = "#ADD8E6" # Light Blue
+C19 = "#191970" # Midnight Blue
+C20 = "#000080" # Navy Blue
+C21 = "#1F51FF" # Neon Blue
+C22 = "#A7C7E7" # Pastel Blue
+C23 = "#CCCCFF" # Periwinkle
+C24 = "#B6D0E2" # Powder Blue
+C25 = "#96DED1" # Robin Egg Blue
+C26 = "#4169E1" # Royal Blue
+C27 = "#0F52BA" # Sapphire Blue
+C28 = "#9FE2BF" # Seafoam Green
+c29 = "#87CEEB" # Sky Blue
 
 # Steel Blue	
 #4682B4
-
 # Teal	
 #008080
-
 # Turquoise	
 #40E0D0
-
 # Ultramarine	
 #0437F2
-
 # Verdigris	
 #40B5AD
-
 # Zaffre	
 #0818A8
 
 
-# In[5]:
+# date_person_as_cluster
 
+start, end = "2016-01-01", "2021-12-31"
+holiday_dates = [str(date.date()) for date in pd.date_range(start, end, freq="1d") if date in holidays.NL()]
 
-#date_person_as_cluster
-holidays = [
-"2016-03-25",
-"2016-05-16" ,
-"2017-04-14" ,
-"2017-04-27" ,
-"2017-05-25" ,
-"2018-03-30" ,
-"2018-04-02" ,
-"2018-04-27" ,
-"2018-05-10" ,
-"2018-05-21" ,
-"2019-04-19" ,
-"2019-05-30" ,
-"2019-06-09" ,
-"2019-06-10" ,
-"2020-04-10" ,
-"2020-04-27" ,
-"2020-05-05" ,
-"2020-06-01" ,
-"2021-04-02" ,
-"2021-04-05" ]
-
-# all activities
-AT_selector = 'True'
 
 # 9 randomly selected cases showing variety of behavior
 # Projects = ['Project1','Project4']
 Projects = ['Project1','Project2','Project3','Project4','Project5','Project6','Project7','Project8','Project9','Project10']
-Pro_selector = "e1.Project in "+str(Projects)
-Pro_selector_e2 = "e2.Project in "+str(Projects)
+Pro_selector = "e1.Project in " + str(Projects)
+Pro_selector_e2 = "e2.Project in " + str(Projects)
 
 
-
-def getNodeLabel_Event(name):
+def get_node_label_event(name):
     return name[7:14]
 #     return name[:]
 
-def getEventsDF(tx, dot, entity_type, color, fontcolor, edge_width):
+def get_events_df(tx, dot, entity_type, color, fontcolor, edge_width, verbose: bool = False):
     q = f'''
         MATCH (e1) -[r:DF2{{EntityType:"{entity_type}"}}]-> (e2:Event)
         RETURN e1,r,e2
         '''
-    print(q)
+    if verbose:
+        print(q)
     
-    i = 0
     for record in tx.run(q):
         if record["e2"] != None:
             e1_id = str(record['e1'].id)
             e2_id = str(record['e2'].id)
             e1_date = str(record["e1"]["Date"])
-            e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+            e1_name = str(record["e1"]["Date"]) + ' P' + get_node_label_event(str(record["e1"]["Project"])) + ' ' + get_node_label_event(str(record["e1"]["Person"]))
             e2_date = str(record["e2"]["Date"])
-            e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
-            e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-            e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                            
+            e2_name = str(record["e2"]["Date"]) + ' P' + get_node_label_event(str(record["e2"]["Project"])) + ' ' + get_node_label_event(str(record["e2"]["Person"])) 
+            e1_label = ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
+            e2_label = ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"]))                                                                                            
             e1_project = str(record['e1']['Project'])
             e2_project = str(record['e2']['Project'])
-            days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
+            days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holiday_dates)
             
             if e1_date == e2_date:
                 edge_label = ""
@@ -390,9 +246,9 @@ def getEventsDF(tx, dot, entity_type, color, fontcolor, edge_width):
 #     for record in tx.run(q):
 #         if record["e2"] != None:
 #             e1_date = str(record["e1"]["Date"])
-#             e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+#             e1_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
 #             e2_date = str(record["e2"]["Date"])
-#             e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
+#             e2_name = str(record["e2"]["Date"])+ ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"])) 
 #             e1_person = str(record['e1']['Person'])
 #             e2_person = str(record['e2']['Person'])
 #             dot.edge(e1_name, e2_name, rank = "same",style = "invis",constraint = "false")
@@ -401,7 +257,7 @@ def getEventsDF(tx, dot, entity_type, color, fontcolor, edge_width):
             
             
             
-def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
+def get_resources_df(tx, dot, ID, color, fontcolor, edge_width):
     q = f'''
         match (n:Entity {{ID:"{ID}"}}) <-[:CORR]- (e1:Event) -[r:DF3{{EntityType:'AT_Person'}}]-> (e2:Event)
         WHERE {Pro_selector} AND {Pro_selector_e2}
@@ -410,14 +266,14 @@ def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
     for record in tx.run(q):
         if record["e2"] != None:
             e1_date = str(record["e1"]["Date"])
-            e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+            e1_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
             e2_date = str(record["e2"]["Date"])
-            e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
+            e2_name = str(record["e2"]["Date"])+ ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"])) 
             e1_person = str(record['e1']['Person'])
             e2_person = str(record['e2']['Person'])
-            e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-            e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                                      
-            days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holidays)
+            e1_label = ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
+            e2_label = ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"]))                                                                                                      
+            days = np.busday_count(record['e1']['Date'], record['e2']['Date'], holidays = holiday_dates)
             if e1_date == e2_date:
                 with dot.subgraph(name='cluster' + e1_date) as c:
 #                     c.attr(fontcolor='white')
@@ -443,7 +299,7 @@ def getResourcesDF(tx, dot, ID, color, fontcolor, edge_width):
             
 
 
-def getEntityForFirstEvent(tx,dot,entity_type,color,fontcolor):
+def get_entity_for_first_event(tx,dot,entity_type,color,fontcolor):
     q = f'''
         MATCH (e1:Event) -[c:CORR]-> (n:Entity)
         WHERE n.EntityType = "{entity_type}" AND NOT (:Event)-[:DF{{EntityType:n.EntityType}}]->(e1) AND {Pro_selector}
@@ -454,8 +310,8 @@ def getEntityForFirstEvent(tx,dot,entity_type,color,fontcolor):
 #     dot.attr("node",shape="rectangle",fixedsize="false", width="0.4", height="0.4", fontname="Helvetica", fontsize="8", margin="0")
     for record in tx.run(q):
         e_date = str(record["e1"]['Date'])
-        e_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))           
-#         e_name = getNodeLabel_Event(record["e"]["Activity"])
+        e_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))           
+#         e_name = get_node_label_event(record["e"]["Activity"])
         entity_type = record["n"]["EntityType"]
         entity_id = record["n"]["ID"]
 #         entity_uid = record["n"]["id"]
@@ -464,7 +320,7 @@ def getEntityForFirstEvent(tx,dot,entity_type,color,fontcolor):
         dot.node(entity_id, entity_label,shape="rectangle",color=color, fixedsize="false", width="0.4", height="0.4",style="filled", fillcolor=color, fontcolor=fontcolor)
         dot.edge(entity_id, e_name, style="dashed", arrowhead="none",color=color)
 
-def getProjectForFirstEvent(tx,dot,ID,color,fontcolor):
+def get_project_for_first_event(tx,dot,ID,color,fontcolor):
     q = f'''
         MATCH (e1:Event) -[c:CORR]-> (n:Entity)
         WHERE n.ID = "{ID}" AND NOT (:Event)-[:DF{{EntityType:n.EntityType}}]->(e1) AND {Pro_selector}
@@ -476,8 +332,8 @@ def getProjectForFirstEvent(tx,dot,ID,color,fontcolor):
     for record in tx.run(q):
         
         e_date = str(record["e1"]['Date'])
-        e_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))           
-#         e_name = getNodeLabel_Event(record["e"]["Activity"])
+        e_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))           
+#         e_name = get_node_label_event(record["e"]["Activity"])
         entity_type = record["n"]["EntityType"]
         
         entity_id = record["n"]["ID"]
@@ -487,7 +343,7 @@ def getProjectForFirstEvent(tx,dot,ID,color,fontcolor):
         dot.node(entity_id, entity_label,shape="rectangle",color=color ,fixedsize="false", width="0.4", height="0.4", style="filled", fillcolor=color, fontcolor=fontcolor)
         dot.edge(entity_id, e_name, style="dashed", arrowhead="none",color=color)
         
-def getPersonForFirstEvent(tx,dot,ID,color,fontcolor):
+def get_person_for_first_event(tx,dot,ID,color,fontcolor):
     q = f'''
         MATCH (e1:Event) -[c:CORR]-> (n:Entity)
         WHERE n.ID = "{ID}" AND NOT (:Event)-[:DF{{EntityType:n.EntityType}}]->(e1) AND {Pro_selector}
@@ -499,8 +355,8 @@ def getPersonForFirstEvent(tx,dot,ID,color,fontcolor):
     for record in tx.run(q):
         
         e_date = str(record["e1"]['Date'])
-        e_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))           
-#         e_name = getNodeLabel_Event(record["e"]["Activity"])
+        e_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))           
+#         e_name = get_node_label_event(record["e"]["Activity"])
         entity_type = record["n"]["EntityType"]
         
         entity_id = record["n"]["ID"]
@@ -511,10 +367,8 @@ def getPersonForFirstEvent(tx,dot,ID,color,fontcolor):
         dot.edge(entity_id, e_name, style="dashed", arrowhead="none",color=color)
 
 
-# In[6]:
 
-
-def getActivityDF(tx, dot):
+def get_activity_df(tx, dot):
     q = f'''
         MATCH (e1:Event) -[r:DF3{{EntityType:'AT_Activity'}}]-> (e2:Event)
         return e1,r,e2
@@ -522,13 +376,13 @@ def getActivityDF(tx, dot):
     for record in tx.run(q):
         if record["e2"] != None:
             e1_date = str(record["e1"]["Date"])
-            e1_name = str(record["e1"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
+            e1_name = str(record["e1"]["Date"])+ ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
             e2_date = str(record["e2"]["Date"])
-            e2_name = str(record["e2"]["Date"])+ ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"])) 
+            e2_name = str(record["e2"]["Date"])+ ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"])) 
             e1_person = str(record['e1']['Person'])
             e2_person = str(record['e2']['Person'])
-            e1_label = ' P'  + getNodeLabel_Event(str(record["e1"]["Project"]))+' '+ getNodeLabel_Event(str(record["e1"]["Person"]))
-            e2_label = ' P'  + getNodeLabel_Event(str(record["e2"]["Project"]))+' '+ getNodeLabel_Event(str(record["e2"]["Person"]))                                                                                                      
+            e1_label = ' P'  + get_node_label_event(str(record["e1"]["Project"]))+' '+ get_node_label_event(str(record["e1"]["Person"]))
+            e2_label = ' P'  + get_node_label_event(str(record["e2"]["Project"]))+' '+ get_node_label_event(str(record["e2"]["Person"]))                                                                                                      
 #             dot.node(e1_name, label = e1_label)
 #             dot.node(e2_name, label  = e2_label)
             if e1_date == e2_date:
@@ -538,136 +392,109 @@ def getActivityDF(tx, dot):
                 dot.attr(rankdir = 'LR')
 
 
-# In[7]:
-
 
 dot = Digraph("G",comment='Query Result')
 dot.attr("graph",margin="0")
 
 with driver.session() as session:
-    session.read_transaction(getEventsDF, dot,"AT_Pro1" , c5_dark_blue, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro1" , c5_dark_blue, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro1_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project1",c5_dark_blue,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project1",c5_dark_blue,c_white)
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro4" , c5_medium_blue, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro4" , c5_medium_blue, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro4_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project4",c5_medium_blue,c_white)  
+    session.read_transaction(get_project_for_first_event, dot, "Project4",c5_medium_blue,c_white)  
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro2" , C1, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro2" , C1, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro2_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project2",C1,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project2",C1,c_white)
 
-    session.read_transaction(getEventsDF, dot,"AT_Pro3" , C3, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro3" , C3, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro3_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project3",C3,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project3",C3,c_white)
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro5" , C4, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro5" , C4, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro5_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project5",C4,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project5",C4,c_white)
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro6" , C6, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro6" , C6, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro6_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project6",C6,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project6",C6,c_white)
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro7" , C8, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro7" , C8, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro7_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project7",C8,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project7",C8,c_white)
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro8" , C11, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro8" , C11, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro8_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project8",C11,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project8",C11,c_white)
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro9" , C14, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro9" , C14, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro9_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project9",C14,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project9",C14,c_white)
 
     
-    session.read_transaction(getEventsDF, dot,"AT_Pro10", C15, c_black, 3)
+    session.read_transaction(get_events_df, dot,"AT_Pro10", C15, c_black, 3)
 #     session.read_transaction(getPersonDF,dot,"Pro10_Person")
-    session.read_transaction(getProjectForFirstEvent, dot, "Project10",C15,c_white)
+    session.read_transaction(get_project_for_first_event, dot, "Project10",C15,c_white)
  
 
     
-    session.read_transaction(getResourcesDF, dot, "Employee55", c1, c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee55",c1,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee55", c1, c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee55",c1,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee195", c2,c_black, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee195",c2,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee195", c2,c_black, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee195",c2,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee161", c16,c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee161",c16,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee161", c16,c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee161",c16,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee216", c3,c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee216",c3,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee216", c3,c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee216",c3,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee1", c5, c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee1",c5,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee1", c5, c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee1",c5,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee231", c6,c_black, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee231",c6,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee231", c6,c_black, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee231",c6,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee256", c17,c_white, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee256",c17,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee256", c17,c_white, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee256",c17,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee23", c8,c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee23",c8,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee23", c8,c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee23",c8,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee213", c9,c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee213",c9,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee213", c9,c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee213",c9,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee78", c10, c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee78",c10,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee78", c10, c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee78",c10,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee152", c11,c_black,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee152",c11,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee152", c11,c_black,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee152",c11,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee62", c12,c_white, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee62",c12,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee62", c12,c_white, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee62",c12,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee42", c13,c_white,3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee42",c13,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee42", c13,c_white,3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee42",c13,c_white)
     
-    session.read_transaction(getResourcesDF, dot, "Employee64", c14,c_black, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee64",c14,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee64", c14,c_black, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee64",c14,c_white)
 
-    session.read_transaction(getResourcesDF, dot, "Employee204", c15,c_black, 3)
-    session.read_transaction(getPersonForFirstEvent, dot, "Employee204",c15,c_white)
+    session.read_transaction(get_resources_df, dot, "Employee204", c15,c_black, 3)
+    session.read_transaction(get_person_for_first_event, dot, "Employee204",c15,c_white)
 
     
-    session.read_transaction(getActivityDF, dot)
+    session.read_transaction(get_activity_df, dot)
 
-    session.read_transaction(getEntityForFirstEvent, dot, "Activity",c5_orange,c_black)
+    session.read_transaction(get_entity_for_first_event, dot, "Activity",c5_orange,c_black)
      
 file = open("activities.dot","w") 
 file.write(dot.source)
 file.close()
 dot.render('test-output/round-table.gv', view=True)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
