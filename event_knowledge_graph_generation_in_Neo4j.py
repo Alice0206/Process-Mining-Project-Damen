@@ -1,3 +1,6 @@
+import pandas as pd
+from neo4j import GraphDatabase
+
 # The execution is done by Neo4j Software and Python.
 #----------------------------------------------Neo4j Setting----------------------------------------
 # 1. Download Neo4j Desktop(The version is 1.4.13)
@@ -19,14 +22,12 @@ path_to_neo4j_import_directory = 'C:\\temp\\import\\'
 # ensure to allocate enough memory to your database: dbms.memory.heap.max_size=20G advised
 
 # ---------------------------------Using Python to connect with Neo4j and generate event knowledge graph----------------
-import pandas as pd
-import time, os, csv
-from neo4j import GraphDatabase
 
-# connect to Neo4j Server
+# Connect to Neo4j Server
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
-def runQuery(driver, query):
-    print('\n'+query)
+def run_query(driver, query: str, verbose: bool = False):
+    if verbose:
+        print(query, end="\n\n")
     with driver.session() as session:
         result = session.run(query).single()
         if result != None: 
@@ -34,43 +35,21 @@ def runQuery(driver, query):
         else:
             return None
 
-# read event data to Neo4j
-inputFile = 'AT1.csv' 
-def LoadLog(localFile):
-    datasetList = []
-    headerCSV = []
-    i = 0
-    with open(localFile) as f:
-        reader = csv.reader(f)
-        for row in reader:
-            if (i==0):
-                headerCSV = list(row)
-                i +=1
-            else:
-                datasetList.append(row)
-    log = pd.DataFrame(datasetList,columns=headerCSV)
-    log['Date'] = pd.to_datetime(log['Date'], format='%Y-%m-%d')
-    return headerCSV, log
-
 # Step 1: create event nodes
-def CreateEventQuery(logHeader, fileName, LogID = ""):
+def create_event_query(logHeader: list, fileName: str, LogID: str = ""):
     query = f'USING PERIODIC COMMIT LOAD CSV WITH HEADERS FROM \"file:/{fileName}\" as line'
-    for col in logHeader:
-        if col in ['Date']:
-             column = f'line.{col}'
-        else:
-            column = 'line.'+col
-        newLine = ''
-        if (logHeader.index(col) == 0 and LogID != ""):
+    for i, col in enumerate(logHeader):
+        column = 'line.' + col
+        if (i == 0 and LogID != ""):
             newLine = f' CREATE (e:Event {{Log: "{LogID}",{col}: {column},'
-        elif (logHeader.index(col) == 0):
+        elif (i == 0):
             newLine = f' CREATE (e:Event {{ {col}: {column},'
-        else:
-            newLine = f' {col}: {column},'
-        if (logHeader.index(col) == len(logHeader)-1):
+        elif (i == len(logHeader)-1):
             newLine = f' {col}: {column} }})'
+        else:
+            newLine = f' {col}: {column},'           
             
-        query = query + newLine
+        query += newLine
     return query
 
 qCleanDatabase_allRelations = f'''
@@ -85,38 +64,36 @@ CALL apoc.periodic.iterate(
 "MATCH (n) WHERE id(n)=id DELETE n",
 {{batchSize:10000}})'''
 
-runQuery(driver, qCleanDatabase_allRelations) # delete all relationships, comment out if you want to keep them
-runQuery(driver, qCleanDatabase_allNodes)     # delete all nodes, comment out if you want to keep them
+run_query(driver, qCleanDatabase_allRelations) # delete all relationships, comment out if you want to keep them
+run_query(driver, qCleanDatabase_allNodes)     # delete all nodes, comment out if you want to keep them
 
- 
-header, csvLog = LoadLog(inputFile)
-qCreateEvents = CreateEventQuery(header, "AT1.csv", 'Event')
-qCreateEvents
-runQuery(driver, qCreateEvents)
+inputFile = 'AT1.csv'
+csv_log = pd.read_csv(inputFile)
+header = csv_log.columns.values
+qCreateEvents = create_event_query(header, "AT1.csv", 'Event')
+run_query(driver, qCreateEvents)
 
 q_countImportedEvents = "MATCH (e:Event) RETURN count(e)"
-result = runQuery(driver, q_countImportedEvents) 
-print (result)
+result = run_query(driver, q_countImportedEvents)
+print(result)
 
 
 # Step 2: create entity nodes and correlate events to entity nodes
-
-
-data_entities = ['Activity','Project','Person']
+data_entities = ['Activity', 'Project', 'Person']
 for entity in data_entities:
     query_create_entity_nodes = f'''
         CALL apoc.periodic.iterate(
         "MATCH (e:Event) WITH DISTINCT e.{entity} AS id RETURN id",
         "CREATE (n:Entity {{ID:id, EntityType:'{entity}'}})",
         {{batchSize:10000}})'''
-    runQuery(driver, query_create_entity_nodes)
+    run_query(driver, query_create_entity_nodes)
 
     query_correlate_events_to_entity = f'''
         CALL apoc.periodic.iterate(
         "MATCH (e:Event) WHERE EXISTS(e.{entity}) MATCH (n:Entity {{EntityType: '{entity}'}}) WHERE e.{entity} = n.ID RETURN id(e) AS IDe, id(n) as IDn",
         "MATCH (e:Event) WHERE id(e)=IDe MATCH (n:Entity) WHERE id(n) = IDn CREATE (e)-[:CORR]->(n)",
         {{batchSize:10000}})'''
-    runQuery(driver, query_correlate_events_to_entity)
+    run_query(driver, query_correlate_events_to_entity)
         
 # Step 3: Create DF relationships to entity nodes based on entity type
 
@@ -134,21 +111,21 @@ for entity in data_entities:
         "WITH n,e1,e2
         MERGE (e1)-[df:DF {{EntityType:n.EntityType}}]->(e2)",
         {{batchSize:1000}})'''
-    runQuery(driver, query_create_directly_follows)
+    run_query(driver, query_create_directly_follows)
         
 # create DF1 for each entity type
     query_create_directly_follows = f'''
-      CALL apoc.periodic.iterate(
-      "MATCH (n:Entity) WHERE n.EntityType='{entity}'
-      MATCH (n)<-[:CORR]-(e:Event)
-      WITH n, e AS nodes ORDER BY e.Date
-      WITH n, collect(nodes) AS event_node_list
-      UNWIND range(0, size(event_node_list)-2) AS i
-      RETURN n, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
-      "WITH n,e1,e2
-      MERGE (e1)-[df:DF1 {{EntityType:n.EntityType}}]->(e2)",
-      {{batchSize:1000}})'''
-     runQuery(driver, query_create_directly_follows)
+        CALL apoc.periodic.iterate(
+        "MATCH (n:Entity) WHERE n.EntityType='{entity}'
+        MATCH (n)<-[:CORR]-(e:Event)
+        WITH n, e AS nodes ORDER BY e.Date
+        WITH n, collect(nodes) AS event_node_list
+        UNWIND range(0, size(event_node_list)-2) AS i
+        RETURN n, event_node_list[i] AS e1, event_node_list[i+1] AS e2",
+        "WITH n,e1,e2
+        MERGE (e1)-[df:DF1 {{EntityType:n.EntityType}}]->(e2)",
+        {{batchSize:1000}})'''
+    run_query(driver, query_create_directly_follows)
 
 
 
@@ -167,7 +144,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro1_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows) 
+# run_query(driver, query_create_directly_follows) 
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project4'}'
@@ -181,7 +158,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro4_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project2'}'
@@ -195,7 +172,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro2_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project3'}'
@@ -209,7 +186,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro3_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project5'}'
@@ -223,7 +200,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro5_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project6'}'
@@ -237,7 +214,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro6_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project7'}'
@@ -251,7 +228,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro7_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project8'}'
@@ -265,7 +242,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro8_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project9'}'
@@ -279,7 +256,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro9_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 # query_create_directly_follows = f'''
 #     CALL apoc.periodic.iterate(
 #     "MATCH (n1:Entity) WHERE n1.ID='{'Project10'}'
@@ -293,7 +270,7 @@ for entity in data_entities:
 #     "WITH n2,e1,e2
 #     MERGE (e1)-[df :DF2 {{EntityType:'Pro10_Person'}}]->(e2)",
 #     {{batchSize:1000}})'''
-# runQuery(driver, query_create_directly_follows)
+# run_query(driver, query_create_directly_follows)
 
 
 
