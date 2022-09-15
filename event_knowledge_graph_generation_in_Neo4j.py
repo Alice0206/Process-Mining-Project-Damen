@@ -1,5 +1,6 @@
 import pandas as pd
 from neo4j import GraphDatabase
+import neo4j
 
 # The execution is done by Neo4j Software and Python.
 #----------------------------------------------Neo4j Setting----------------------------------------
@@ -25,7 +26,7 @@ path_to_neo4j_import_directory = 'C:\\temp\\import\\'
 
 # Connect to Neo4j Server
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "1234"))
-def run_query(driver, query: str, verbose: bool = False):
+def run_query(driver: neo4j._sync.driver.BoltDriver, query: str, verbose: bool = False):
     if verbose:
         print(query, end="\n\n")
     with driver.session() as session:
